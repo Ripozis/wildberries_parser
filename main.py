@@ -7,7 +7,7 @@ from query_settings import url, proxies, headers # импортируем нас
 prs_json = r'C:/Users/Илья/Desktop/wildberries_parser/wildberries_parser/data.json'
 
 def main(url, proxies, headers): #url, proxies, headers
-    response = requests.post(url, proxies=proxies, headers=headers)
+    response = requests.get(url, proxies=proxies, headers=headers)
     print('Response HTTP Status Code: ', response.status_code)
     #полученые данные переводим в json
     response_json = response.json()
