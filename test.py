@@ -1,13 +1,15 @@
 import requests
-from query_settings import proxies, headers # импортируем настройки запроса. 
+from query_settings import  proxies, headers # импортируем настройки запроса. 
 import math
 
 # Функция для увеличения значения page на 1 в ссылке, если "products" не пустой
 def increment_page_if_products_exist(url):
     # Выполняем GET-запрос к указанной ссылке
-    url_seller_art_count = 'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier=39232&uclusters=1'
-
-    seller_art_count = requests.get(url_seller_art_count, proxies=proxies, headers=headers)
+    # url_seller_art_count = 'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier=39232&uclusters=1'
+    url_catalog_art_count = 'https://catalog.wb.ru/catalog/stationery4/v4/filters?appType=1&curr=rub&dest=12358048&spp=30&subject=4570&uclusters=0'
+    
+    
+    seller_art_count = requests.get(url_catalog_art_count, proxies=proxies, headers=headers)
     art_count = math.ceil((seller_art_count.json()["data"]["total"])/100)  # получаем количество страниц 
     # print(art_count)
 
@@ -43,8 +45,10 @@ def increment_page_if_products_exist(url):
 
 
 # Ссылка для тестирования
-url = "https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=19&sort=popular&spp=30&supplier=39232&uclusters=1"
-
+#_seller_art
+# url = "https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=19&sort=popular&spp=30&supplier=39232&uclusters=1"
+url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&subject=4570&uclusters=0"
+url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&cat=130944&curr=rub&dest=12358048&sort=popular&spp=30&uclusters=0"
 # Получаем обновленный URL с увеличенным значением page, если "products" не пустой
 updated_url = increment_page_if_products_exist(url)
 print("Обновленный URL:", updated_url)
