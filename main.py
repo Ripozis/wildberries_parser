@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Стартовый файл для теста git
 
 import requests
 import json

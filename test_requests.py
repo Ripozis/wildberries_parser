@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import queue
 import threading
+import json
+import openpyxl
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
@@ -60,8 +62,7 @@ def main():
 #-----------------------
 
 # читаем json файл data.json' и выводим в цикле все даныные из "data": {"products"
-import json
-import openpyxl
+
 
 
 # Создаем новый Excel файл
@@ -98,6 +99,10 @@ def add_commas(input_string):
     print()
 
 add_commas(input_string)
+
+
+
+
 
 # if __name__ == '__main__':
 #     main()
