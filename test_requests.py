@@ -91,19 +91,6 @@ def main():
 # wb.save('output.xlsx')
 
 
-input_string = '12345600'
-def add_commas(input_string):
-    """Функция добавления зяпятой после двух послдених символов"""
-    x= int(len(input_string)-2)
-    print(input_string[:x] +','+ input_string[x:])
-    print()
-
-add_commas(input_string)
-
-
-
-
-
 # if __name__ == '__main__':
 #     main()
 #     check_proxy()
