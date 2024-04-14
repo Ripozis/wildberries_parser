@@ -2,22 +2,22 @@
 # Клас для основых функций парсера
 import asyncio
 import aiohttp
-from query_settings import url, proxies, headers # импортируем настройки запроса. 
+from query_settings import headers # импортируем настройки запроса. 
 import openpyxl
 import json
 import math
 
 
 class WB_parser:
-    def __init__(self, url, proxies, headers):
+    def __init__(self, url, headers):
         self.url = url
-        self.proxies = proxies
+        # self.proxies = proxies
         self.headers = headers
 
-    async def requests_url(self) -> dict:
+    async def requests_url(self, url):
         """Функция запроса данных по url"""
         async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(self.url, proxy=self.proxies) as response:
+            async with session.get(url) as response:
                 data = await response.json()
                 return data
     
@@ -67,18 +67,21 @@ class WB_parser:
         return url
 
 
-    def increment_page_if_products_exist(url):
+    async def increment_page_if_products_exist(self, url, value_search):
         """Функция для увеличения значения page на 1 в ссылке, если "products" не пустой"""
         # Выполняем GET-запрос к указанной ссылке
-        # url_seller_art_count = 'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier=39232&uclusters=1'
-        url_catalog_art_count = 'https://catalog.wb.ru/catalog/stationery4/v4/filters?appType=1&curr=rub&dest=12358048&spp=30&subject=4570&uclusters=0'
-        seller_art_count = asyncio.run(start_class(url_catalog_art_count, proxies, headers))  # напиши код для получения результата запроса из requests_url() 
-        art_count = math.ceil((seller_art_count.json()["data"]["total"])/100)  # получаем общее количество страниц для цикла
-        # print(art_count)
+        url_seller_art_count = f'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier={value_search}&uclusters=1'
+        # url_catalog_art_count = 'https://catalog.wb.ru/catalog/stationery4/v4/filters?appType=1&curr=rub&dest=12358048&spp=30&subject=4570&uclusters=0'
+        # print(url_seller_art_count)
+        seller_art_count = await self.requests_url(url_seller_art_count)  #asyncio.run(start_class(url_catalog_art_count, proxies, headers))  # напиши код для получения результата запроса из requests_url() 
+        # print(seller_art_count)
+        art_count = math.ceil(seller_art_count["data"]["total"] / 100) # получаем общее количество страниц для цикла
+        print(art_count)
 
         for i in range(art_count):
-
+                
             # Получаем текущее значение page из URL
+            simple_url = "https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=19&sort=popular&spp=30&supplier=39232&uclusters=1"
             """url.split('?')[-1]: Разделяет URL на части по символу ? и выбирает последнюю часть, которая 
             содержит параметры запроса после знака вопроса.
             url.split('?')[-1].split('&'): Разделяет последнюю часть URL на подстроки, используя символ & в 
@@ -86,7 +89,7 @@ class WB_parser:
             p.split('=') for p in ...: Проходится по каждой из этих подстрок и разделяет их по символу = для 
             создания пар ключ-значение.
             dict(...): Создает словарь, используя полученные пары ключ-значение."""
-            params = dict(p.split('=') for p in url.split('?')[-1].split('&'))
+            params = dict(p.split('=') for p in simple_url.split('?')[-1].split('&'))
             # page = int(params['page'])
 
             # Добавляем 1 к значению page
@@ -103,13 +106,12 @@ class WB_parser:
             ключ-значение символом &.
             [f"{k}={v}" for k, v in params.items()]: Проходится по каждой паре ключ-значение в словаре params и 
             формирует строку вида "ключ=значение" для каждой пары."""
-            updated_url = url.split('?')[0] + '?' + '&'.join([f"{k}={v}" for k, v in params.items()])
+            updated_url = simple_url.split('?')[0] + '?' + '&'.join([f"{k}={v}" for k, v in params.items()])
             print(updated_url)
             # Ссылка для тестирования👆
-            #_seller_art
-            # url = "https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=19&sort=popular&spp=30&supplier=39232&uclusters=1"
-            url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&subject=4570&uclusters=0"
-            url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&cat=130944&curr=rub&dest=12358048&sort=popular&spp=30&uclusters=0"
+            # url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&subject=4570&uclusters=0"
+            # url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&cat=130944&curr=rub&dest=12358048&sort=popular&spp=30&uclusters=0"
+            return updated_url
 
     def pars_response(response_json):
             """Функция для разбора json"""
@@ -155,9 +157,9 @@ class WB_parser:
 
 
 
-async def start_class(url, proxies, headers):
-    obj = WB_parser(url, proxies, headers)
+async def start_class(url,  headers):
+    obj = WB_parser(url,  headers)
     result = await obj.requests_url()
     print(result)
 
-asyncio.run(start_class(url, proxies, headers))
+# asyncio.run(start_class(url,  headers))

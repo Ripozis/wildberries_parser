@@ -3,7 +3,14 @@
 import requests
 import json
 from query_settings import url, proxies, headers # импортируем настройки запроса. 
+from main_class import WB_parser
+import asyncio
+import aiohttp
+
+
 prs_json = r'C:/Users/Илья/Desktop/wildberries_parser/wildberries_parser/data.json'
+
+url_seller = 'https://www.wildberries.ru/seller/89610'
 
 def main(url, proxies, headers): #url, proxies, headers
     response = requests.get(url, proxies=proxies, headers=headers)
@@ -43,11 +50,21 @@ def main(url, proxies, headers): #url, proxies, headers
             print(f'Артикул: {item["id"]}')
             print(f'цена: {price}')
 
-article_id = (123837569,210087382)
+value_search = url_seller.split('/')[3]
 
 
+if value_search == 'seller':
+    print('seller')
+    seller = url_seller.split('/')[4]
+    print(seller)
+else:
+    print('not seller')
 
+obj = WB_parser(url, headers)
+# result = obj.increment_page_if_products_exist(url_seller, seller)
 
+result = asyncio.run(obj.increment_page_if_products_exist(url_seller, seller))
+print(result)
 
-if __name__ == '__main__':
-    main(url, proxies, headers) #url, proxies, headers
+# if __name__ == '__main__':
+#     main(url, proxies, headers) #url, proxies, headers
