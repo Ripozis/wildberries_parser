@@ -50,21 +50,23 @@ def main(url, proxies, headers): #url, proxies, headers
             print(f'Артикул: {item["id"]}')
             print(f'цена: {price}')
 
-value_search = url_seller.split('/')[3]
+# value_search = url_seller.split('/')[3]
 
 
-if value_search == 'seller':
-    print('seller')
-    seller = url_seller.split('/')[4]
-    print(seller)
-else:
-    print('not seller')
+# if value_search == 'seller':
+#     print('seller')
+#     seller = url_seller.split('/')[4]
+#     print(seller)
+# else:
+#     print('not seller')
 
 obj = WB_parser(url, headers)
 # result = obj.increment_page_if_products_exist(url_seller, seller)
 
-result = asyncio.run(obj.increment_page_if_products_exist(url_seller, seller))
+result = asyncio.run(obj.increment_page_if_products_exist(url_seller))
 print(result)
 
 # if __name__ == '__main__':
 #     main(url, proxies, headers) #url, proxies, headers
+
+

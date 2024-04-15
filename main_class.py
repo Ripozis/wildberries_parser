@@ -67,21 +67,35 @@ class WB_parser:
         return url
 
 
-    async def increment_page_if_products_exist(self, url, value_search):
+    async def increment_page_if_products_exist(self, value_search):
         """Функция для увеличения значения page на 1 в ссылке, если "products" не пустой"""
-        # Выполняем GET-запрос к указанной ссылке
-        url_seller_art_count = f'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier={value_search}&uclusters=1'
+        url_search = value_search.split('/')[3]
+        if url_search == 'seller':
+            print('seller')
+            seller = value_search.split('/')[4]
+            url_seller_art_count = f'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier={seller}&uclusters=1'
+            seller_art_count = await self.requests_url(url_seller_art_count)  #asyncio.run(start_class(url_catalog_art_count, proxies, headers))  # напиши код для получения результата запроса из requests_url() 
+            print(seller)
+        else:
+            # url_catalog_art_count = 'https://catalog.wb.ru/catalog/stationery4/v4/filters?appType=1&curr=rub&dest=12358048&spp=30&subject=4570&uclusters=0'
+            print('not seller')
+
+
+        # url_seller_art_count = f'https://catalog.wb.ru/sellers/v4/filters?appType=1&curr=rub&dest=12358048&filters=xsubject&spp=30&supplier={value_search}&uclusters=1'
         # url_catalog_art_count = 'https://catalog.wb.ru/catalog/stationery4/v4/filters?appType=1&curr=rub&dest=12358048&spp=30&subject=4570&uclusters=0'
         # print(url_seller_art_count)
-        seller_art_count = await self.requests_url(url_seller_art_count)  #asyncio.run(start_class(url_catalog_art_count, proxies, headers))  # напиши код для получения результата запроса из requests_url() 
+        
+        # Выполняем GET-запрос к указанной ссылке
+        # seller_art_count = await self.requests_url(url_seller_art_count)  #asyncio.run(start_class(url_catalog_art_count, proxies, headers))  # напиши код для получения результата запроса из requests_url() 
         # print(seller_art_count)
         art_count = math.ceil(seller_art_count["data"]["total"] / 100) # получаем общее количество страниц для цикла
         print(art_count)
+        
+        simple_url = f"https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&supplier={seller}&uclusters=1"
+        list_url = []
 
-        for i in range(art_count):
-                
+        for i in range(art_count):  
             # Получаем текущее значение page из URL
-            simple_url = "https://catalog.wb.ru/sellers/v2/catalog?appType=1&curr=rub&dest=12358048&page=19&sort=popular&spp=30&supplier=39232&uclusters=1"
             """url.split('?')[-1]: Разделяет URL на части по символу ? и выбирает последнюю часть, которая 
             содержит параметры запроса после знака вопроса.
             url.split('?')[-1].split('&'): Разделяет последнюю часть URL на подстроки, используя символ & в 
@@ -94,7 +108,7 @@ class WB_parser:
 
             # Добавляем 1 к значению page
             i += 1
-    
+            
             # Обновляем значение page в URL
             params['page'] = str(i)
 
@@ -107,11 +121,12 @@ class WB_parser:
             [f"{k}={v}" for k, v in params.items()]: Проходится по каждой паре ключ-значение в словаре params и 
             формирует строку вида "ключ=значение" для каждой пары."""
             updated_url = simple_url.split('?')[0] + '?' + '&'.join([f"{k}={v}" for k, v in params.items()])
-            print(updated_url)
+            list_url.append(updated_url) # Добавление в список итоговой ссылки на стараницы для перебора
+            # print(updated_url)
             # Ссылка для тестирования👆
             # url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&subject=4570&uclusters=0"
             # url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&cat=130944&curr=rub&dest=12358048&sort=popular&spp=30&uclusters=0"
-            return updated_url
+        return list_url
 
     def pars_response(response_json):
             """Функция для разбора json"""

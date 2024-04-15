@@ -29,7 +29,7 @@ def increment_page_if_products_exist(url):
 
         # Добавляем 1 к значению page
         i += 1
- 
+        list_url = []
         # Обновляем значение page в URL
         params['page'] = str(i)
 
@@ -42,7 +42,9 @@ def increment_page_if_products_exist(url):
         [f"{k}={v}" for k, v in params.items()]: Проходится по каждой паре ключ-значение в словаре params и 
         формирует строку вида "ключ=значение" для каждой пары."""
         updated_url = url.split('?')[0] + '?' + '&'.join([f"{k}={v}" for k, v in params.items()])
+        list_url.append(updated_url)
         print(updated_url)
+        #добавление в список данных через цикл 
 
 
 # Ссылка для тестирования
@@ -51,5 +53,7 @@ def increment_page_if_products_exist(url):
 url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&curr=rub&dest=12358048&page=1&sort=popular&spp=30&subject=4570&uclusters=0"
 url = "https://catalog.wb.ru/catalog/stationery4/v2/catalog?appType=1&cat=130944&curr=rub&dest=12358048&sort=popular&spp=30&uclusters=0"
 # Получаем обновленный URL с увеличенным значением page, если "products" не пустой
-updated_url = increment_page_if_products_exist(url)
-print("Обновленный URL:", updated_url)
+# updated_url = increment_page_if_products_exist(url)
+# print("Обновленный URL:", updated_url)
+
+# добавление в список данных через цикл
