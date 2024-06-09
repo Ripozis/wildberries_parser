@@ -66,7 +66,7 @@ obj = WB_parser(url, headers)
 result = asyncio.run(obj.increment_page_if_products_exist(url_seller))
 print(result)
 
-# if __name__ == '__main__':
-#     main(url, proxies, headers) #url, proxies, headers
+if __name__ == '__main__':
+    main(url, proxies, headers) #url, proxies, headers
 
 
